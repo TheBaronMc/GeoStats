@@ -5,14 +5,14 @@
       <div id="inputs">
         <div>
             <p>Longitude</p>
-            <input type="text" name="longitude" id="longitude" placeholder="long.">
+            <input type="text" placeholder="longitude" v-model="longitude">
         </div>
         <div>
             <p>Latitude</p>
-            <input type="text" name="latitude" id="latitude" placeholder="lat.">
+            <input type="text" placeholder="latitude" v-model="latitude">
         </div>
         <div>
-            <button v-if="points.length > 0" @click="deleteAll">Delete All</button>
+            <button v-if="points.length > 0" @click="deletePoints">Delete All</button>
             <button @click="addPoint">Add</button>
         </div>
       </div>
@@ -28,8 +28,8 @@
         <tbody>
             <tr v-for='(point, index) in points'>
                 <td>n°{{ index + 1 }}</td>
-                <td>{{ point['long'] }}</td>
-                <td>{{ point['lat'] }}</td>
+                <td>{{ point['longitude'] }}</td>
+                <td>{{ point['latitude'] }}</td>
                 <td><button @click="deletePoint(index)" >Delete</button></td>
             </tr>
         </tbody>
@@ -42,37 +42,31 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'AddPoints',
-  props: {
-      points: {
-          type: Array,
-          required: true
-      }
-  },
   data() {
-      return { points: this.points }
+      return { longitude: 0, latitude: 0 }
   },
-  mounted() {
+  computed: {
+      points() {
+          return this.$store.state.points
+      }
   },
   methods: {
       addPoint() {
-        let latField = document.getElementById('latitude');
-        let longField = document.getElementById('longitude');
+        let isNumber = (value) => !isNaN(parseFloat(value))
 
-        let isNumber = (value) => {
-            return !isNaN(parseFloat(value));
-        }
-
-        if (isNumber(longField.value) && isNumber(latField.value)) {
-            this.points.push({long: parseFloat(longField.value), lat: parseFloat(latField.value)});            
+        if (isNumber(this.longitude) && isNumber(this.latitude)) {
+            let point = {
+                longitude: parseFloat(this.longitude),
+                latitude: parseFloat(this.latitude)
+            }
+            this.$store.commit('addPoint', point)    
         }
       },
       deletePoint(index) {
-        this.points.splice(index, 1);
+        this.$store.commit('deletePoint', index)   
       },
-      deleteAll() {
-        while (this.points.length > 0) {
-            this.points.pop();
-        }
+      deletePoints() {
+        this.$store.commit('deletePoints')
       }
   }
 });

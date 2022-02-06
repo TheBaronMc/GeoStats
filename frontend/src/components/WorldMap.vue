@@ -13,16 +13,14 @@ import 'leaflet/dist/leaflet.css';
 
 export default defineComponent({
   name: 'WorldMap',
-  props: {
-    points: {
-      type: Array,
-      required: true
-    }
-  },
   data() {
     let map = null;
-    let previous_points = [];
-    return { map, points: this.points, previous_points }
+    return { map }
+  },
+  computed: {
+    points () {
+      return this.$store.state.points
+    }
   },
   mounted() {
     this.map = LeaFlet.map('map').setView([43.604652, 1.444], 10);
@@ -34,27 +32,6 @@ export default defineComponent({
         tileSize: 512,
         zoomOffset: -1,
     }).addTo(this.map);
-  },
-  watch: {
-    points: {
-      handler() {
-        if (this.previous_points.length != 0) {
-          LeaFlet.polyline(this.previous_points).removeFrom(this.map);
-        }
-        
-        let points = []
-        for (let point of this.points) {
-          points.push([point[0], point[1]]);
-        }
-
-        this.previous_points = points;
-
-        //LeaFlet.polyline(previous_value).removeFrom(this.map);
-        //LeaFlet.polyline(new_value).addTo(this.map);
-
-      },
-      deep: true
-    }
   }
 });
 </script>

@@ -1,8 +1,8 @@
 <template>
   <page-header class=header></page-header>
   <div class="content">
-    <world-map :points="points"></world-map>
-    <add-points :points="points" ></add-points>
+    <world-map></world-map>
+    <add-points></add-points>
   </div>
 </template>
 
