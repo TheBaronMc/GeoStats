@@ -15,7 +15,8 @@ export default defineComponent({
   name: 'WorldMap',
   data() {
     let map = null;
-    return { map }
+    let polyline = LeaFlet.polyline([])
+    return { map, polyline }
   },
   computed: {
     points () {
@@ -32,6 +33,29 @@ export default defineComponent({
         tileSize: 512,
         zoomOffset: -1,
     }).addTo(this.map);
+
+    this.polyline.addTo(this.map)
+  },
+  watch: {
+    points: {
+      handler(value) {
+        
+        //if (this.polyline) {
+        //  this.polyline.removeFrom(this.map)
+        //}
+
+        let point_list = []
+
+        for (let point of value) {
+          point_list.push([point.longitude, point.latitude])
+        }
+
+        //this.polyline = LeaFlet.polyline(point_list)
+        //this.polyline.addTo(this.map)
+        this.polyline.setLatLngs(point_list)
+      },
+      deep: true
+    }
   }
 });
 </script>
